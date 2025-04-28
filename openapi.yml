@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Itinerary Service API
+  version: 1.0.0
+  description: |
+    Given an unordered list of flight‐ticket pairs, reconstruct the full travel itinerary.
+servers:
+  - url: http://localhost:8080
+paths:
+  /itinerary:
+    post:
+      summary: Reconstruct flight itinerary
+      requestBody:
+        description: Array of [source, destination] IATA-codes
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: array
+                minItems: 2
+                maxItems: 2
+                items:
+                  type: string
+                  example: "JFK"
+      responses:
+        '200':
+          description: Ordered list of IATA-codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["JFK","LAX","DXB","SFO","SJC"]
+        '400':
+          description: Invalid input or reconstruction error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "invalid request payload"
